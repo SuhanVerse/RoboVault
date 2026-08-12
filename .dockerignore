@@ -1,0 +1,16 @@
+.git
+.gitignore
+docs
+.agents
+.claude
+skills-lock.json
+.env
+.env.example
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+htmlcov
+cov_annotate
+tests
