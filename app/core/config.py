@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
 
     database_url: str = (
-        "postgresql+psycopg2://robovault:robovault@localhost:5432/robovault"
+        "postgresql+psycopg2://robovault:robovault@localhost:5433/robovault"
     )
     secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
