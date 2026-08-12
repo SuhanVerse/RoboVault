@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+extend-exclude = ["alembic"]
+
+[tool.ruff.lint]
+# EXE002: ignore if the repo lives on a Windows-mounted filesystem where
+# every file reports as executable and chmod is a no-op.
+extend-ignore = ["EXE002"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+extend-exclude = "alembic"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
