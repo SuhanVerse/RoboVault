@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-robovault}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-robovault}
+      POSTGRES_DB: ${POSTGRES_DB:-robovault}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-robovault} -d ${POSTGRES_DB:-robovault}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-robovault}:${POSTGRES_PASSWORD:-robovault}@db:5432/${POSTGRES_DB:-robovault}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads:
