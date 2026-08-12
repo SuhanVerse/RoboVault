@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local-only files - NEVER commit these to the repo
+# (internal planning docs, AI agent skills & tooling)
+docs/
+.agents/
+.claude/
+skills-lock.json
+.vscode/
