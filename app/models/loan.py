@@ -1,4 +1,3 @@
-
 from datetime import date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -44,8 +43,7 @@ class Loan(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     due_date: Mapped[date | None] = mapped_column(Date)
-    returned_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True))
+    returned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     approved_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
 
     item: Mapped["Item"] = relationship(back_populates="loans")

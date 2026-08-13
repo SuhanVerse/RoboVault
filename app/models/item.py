@@ -26,10 +26,8 @@ class Item(Base):
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     category: Mapped[str | None] = mapped_column(String(100), index=True)
     description: Mapped[str | None] = mapped_column(Text)
-    quantity_total: Mapped[int] = mapped_column(
-        Integer, default=0, nullable=False)
-    quantity_available: Mapped[int] = mapped_column(
-        Integer, default=0, nullable=False)
+    quantity_total: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    quantity_available: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     condition: Mapped[str | None] = mapped_column(String(100))
     photo_url: Mapped[str | None] = mapped_column(String(255))
     unit_price: Mapped[float | None] = mapped_column(Numeric(10, 2))
