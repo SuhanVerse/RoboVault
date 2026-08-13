@@ -224,3 +224,6 @@ docs/
 .claude/
 skills-lock.json
 .vscode/
+
+# Local tooling (portable Postgres for tests)
+.tools/
