@@ -21,8 +21,7 @@ class BillUpload(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     image_url: Mapped[str] = mapped_column(String(255), nullable=False)
-    uploaded_by: Mapped[int] = mapped_column(
-        ForeignKey("users.id"), nullable=False)
+    uploaded_by: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     status: Mapped[BillStatus] = mapped_column(
         SAEnum(BillStatus, name="bill_status"),
         default=BillStatus.PENDING,
