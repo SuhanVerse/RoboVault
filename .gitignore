@@ -222,6 +222,8 @@ __marimo__/
 docs/
 .agents/
 .claude/
+agent/
+.freebuff/
 skills-lock.json
 .vscode/
 
