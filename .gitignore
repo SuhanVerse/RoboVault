@@ -224,6 +224,7 @@ docs/
 .claude/
 agent/
 .freebuff/
+uploads/
 skills-lock.json
 .vscode/
 

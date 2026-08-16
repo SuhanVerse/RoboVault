@@ -59,3 +59,30 @@ def test_admin_only_route_with_member_role(client) -> None:
     headers = _create_user(UserRole.MEMBER, "member@club.edu")
     response = client.post(ITEMS_URL, data={"name": "Widget"}, headers=headers)
     assert response.status_code == 403
+
+
+def test_invalid_token_returns_401(client) -> None:
+    """A bearer token that fails to decode returns 401."""
+    response = client.get(ITEMS_URL, headers={"Authorization": "Bearer not-a-real-jwt"})
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid or expired token"}
+
+
+def test_token_for_deleted_user_returns_401(client, db: Session) -> None:
+    """A valid token whose user no longer exists returns 401."""
+    user = User(
+        name="Ghost",
+        email="ghost@club.edu",
+        password_hash=security.hash_password("password123"),
+        role=UserRole.MEMBER,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    token = security.create_access_token(str(user.id))
+    db.delete(user)
+    db.commit()
+
+    response = client.get(ITEMS_URL, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 401
+    assert response.json() == {"detail": "User no longer exists"}
