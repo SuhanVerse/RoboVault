@@ -38,9 +38,6 @@ def parse_bill(
         text = pytesseract.image_to_string(image)
         suggestions = parse_line_items(text)
     except Exception:  # noqa: BLE001 — any OCR failure → 422, never a 500
-        db.rollback()
-        upload.status = BillStatus.FAILED
-        db.commit()
         raise HTTPException(
             status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Could not read the bill image",
