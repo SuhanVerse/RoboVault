@@ -1,55 +1,3 @@
-# Member 3 — Push Guide (Documentation & Final Polish)
-
-> **For Friend 3 (Member 3):** This guide has every file you need to copy-paste and
-> push. Your PC is slow, so we keep it simple — no Docker, no database, no tests.
-> Just git, a text editor, and the commands below.
-
----
-
-## What You're Pushing
-
-Your contribution is the **project documentation** — the README that the teacher
-will see on the GitHub repo homepage. This is a real, meaningful contribution:
-every good project needs documentation, and the README is the first thing anyone
-reads.
-
-| What                                                            | Branch         | Why it matters                                               |
-| --------------------------------------------------------------- | -------------- | ------------------------------------------------------------ |
-| Full README with API docs, setup instructions, and architecture | `feature/docs` | Teacher sees professional documentation as your contribution |
-
----
-
-## Prerequisites
-
-1. **Git installed** — [git-scm.com](https://git-scm.com/downloads)
-2. **GitHub account** — already set up (you're in the SuhanVerse org)
-3. **Clone the repo** (one-time):
-
-```bash
-git clone https://github.com/SuhanVerse/RoboVault.git
-cd RoboVault
-```
-
----
-
-## Step 1: Create Your Branch
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b feature/docs
-```
-
----
-
-## Step 2: Replace README.md
-
-Open `README.md` in any text editor (Notepad, VS Code, etc.) and replace
-**everything** with the content below.
-
-### Paste This into README.md
-
-````markdown
 # RoboVault
 
 Inventory & equipment lending API for the robotics club.
@@ -91,22 +39,21 @@ app/
 │   └── lending.py    #   Business rules (stock checks, overdue flag)
 └── main.py           #   FastAPI app factory
 ```
-````
 
 ## Tech Stack
 
-| Layer            | Technology                      |
-| ---------------- | ------------------------------- |
-| Framework        | FastAPI 0.141                   |
-| Database         | PostgreSQL 16 (Docker)          |
-| ORM              | SQLAlchemy 2.0 (mapped columns) |
-| Migrations       | Alembic                         |
-| Auth             | bcrypt + python-jose JWT        |
-| OCR              | Tesseract + Pillow + OpenCV     |
-| Testing          | pytest + pytest-cov             |
-| Linting          | ruff + black                    |
-| CI/CD            | GitHub Actions                  |
-| Containerization | Docker + Docker Compose         |
+| Layer | Technology |
+|-------|-----------|
+| Framework | FastAPI 0.141 |
+| Database | PostgreSQL 16 (Docker) |
+| ORM | SQLAlchemy 2.0 (mapped columns) |
+| Migrations | Alembic |
+| Auth | bcrypt + python-jose JWT |
+| OCR | Tesseract + Pillow + OpenCV |
+| Testing | pytest + pytest-cov |
+| Linting | ruff + black |
+| CI/CD | GitHub Actions |
+| Containerization | Docker + Docker Compose |
 
 ## Quick Start
 
@@ -219,29 +166,29 @@ curl http://localhost:8000/health
 
 ## Endpoints Summary
 
-| Method | Path                         | Auth     | Description      |
-| ------ | ---------------------------- | -------- | ---------------- |
-| POST   | `/api/v1/auth/register`      | None     | Create account   |
-| POST   | `/api/v1/auth/login`         | None     | Get JWT token    |
-| GET    | `/api/v1/items`              | Any user | List inventory   |
-| POST   | `/api/v1/items`              | ADMIN    | Create item      |
-| GET    | `/api/v1/items/{id}`         | Any user | Get item details |
-| PUT    | `/api/v1/items/{id}`         | ADMIN    | Update item      |
-| DELETE | `/api/v1/items/{id}`         | ADMIN    | Delete item      |
-| POST   | `/api/v1/loans/request`      | Any user | Request a loan   |
-| PUT    | `/api/v1/loans/{id}/approve` | ADMIN    | Approve loan     |
-| PUT    | `/api/v1/loans/{id}/reject`  | ADMIN    | Reject loan      |
-| PUT    | `/api/v1/loans/{id}/return`  | ADMIN    | Return loan      |
-| POST   | `/api/v1/ocr/parse-bill`     | ADMIN    | Parse bill image |
-| GET    | `/health`                    | None     | Health check     |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/api/v1/auth/register` | None | Create account |
+| POST | `/api/v1/auth/login` | None | Get JWT token |
+| GET | `/api/v1/items` | Any user | List inventory |
+| POST | `/api/v1/items` | ADMIN | Create item |
+| GET | `/api/v1/items/{id}` | Any user | Get item details |
+| PUT | `/api/v1/items/{id}` | ADMIN | Update item |
+| DELETE | `/api/v1/items/{id}` | ADMIN | Delete item |
+| POST | `/api/v1/loans/request` | Any user | Request a loan |
+| PUT | `/api/v1/loans/{id}/approve` | ADMIN | Approve loan |
+| PUT | `/api/v1/loans/{id}/reject` | ADMIN | Reject loan |
+| PUT | `/api/v1/loans/{id}/return` | ADMIN | Return loan |
+| POST | `/api/v1/ocr/parse-bill` | ADMIN | Parse bill image |
+| GET | `/health` | None | Health check |
 
 ## Roles & Permissions
 
-| Role       | Can do                                                                       |
-| ---------- | ---------------------------------------------------------------------------- |
-| **ADMIN**  | Full access — create/edit/delete items, approve/reject/return loans, run OCR |
-| **MEMBER** | Read items, request loans                                                    |
-| **GUEST**  | Read items only (default on registration)                                    |
+| Role | Can do |
+|------|--------|
+| **ADMIN** | Full access — create/edit/delete items, approve/reject/return loans, run OCR |
+| **MEMBER** | Read items, request loans |
+| **GUEST** | Read items only (default on registration) |
 
 ## Running Tests
 
@@ -268,78 +215,12 @@ RoboVault/
 
 ## Team
 
-| Member                | Role                | Contributions                                               |
-| --------------------- | ------------------- | ----------------------------------------------------------- |
-| Member 1 (Engineer 1) | Infrastructure Lead | Project scaffold, Docker, CI/CD, Alembic, database setup    |
-| Member 2 (Engineer 2) | Backend Developer   | Authentication, JWT, RBAC, inventory CRUD, lending workflow |
-| Member 3 (Engineer 3) | Documentation & QA  | API documentation, README, Swagger polish, test coverage    |
+| Member | Role | Contributions |
+|--------|------|---------------|
+| Member 1 (Engineer 1) | Infrastructure Lead | Project scaffold, Docker, CI/CD, Alembic, database setup |
+| Member 2 (Engineer 2) | Backend Developer | Authentication, JWT, RBAC, inventory CRUD, lending workflow |
+| Member 3 (Engineer 3) | Documentation & QA | API documentation, README, Swagger polish, test coverage |
 
 ## License
 
 Academic project — not for production use.
-
-````
-
----
-
-## Step 3: Commit and Push
-
-```bash
-git add README.md
-git commit -m "docs: add full README with API reference, setup guide, and architecture"
-git push origin feature/docs
-````
-
----
-
-## Step 4: Open a Pull Request
-
-1. Go to **https://github.com/SuhanVerse/RoboVault**
-2. Click **Compare & pull request** (yellow banner)
-3. Set **base: main** ← **compare: feature/docs**
-4. Title: `docs: add project README with API reference and architecture`
-5. Description: `Adds comprehensive README with setup instructions, API examples, endpoint summary, and team roles.`
-6. Click **Create pull request**
-
----
-
-## Done!
-
-The teacher will see:
-
-- **Your branch** `feature/docs` with a clean commit history
-- **Your PR** with the README changes
-- **Your name** in the Team section of the README
-- **Your contribution** clearly documented in the repo
-
----
-
-## Troubleshooting
-
-**"permission denied" on push:**
-
-```bash
-git remote set-url origin https://github.com/SuhanVerse/RoboVault.git
-git push origin feature/docs
-```
-
-It will ask for your GitHub username and a Personal Access Token (not your password).
-Create one at: https://github.com/settings/tokens
-
-**"branch already exists":**
-
-```bash
-git checkout feature/docs
-git pull origin feature/docs
-```
-
-**Merge conflicts with main:**
-
-```bash
-git checkout feature/docs
-git merge main
-# Fix any conflicts in the editor, then:
-git add .
-git commit -m "merge: resolve conflicts with main"
-git push origin feature/docs
-```
