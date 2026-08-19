@@ -6,14 +6,18 @@ suffix (e.g. ``robovault`` -> ``robovault_test``). Override with the
 """
 
 import os
+from collections.abc import Callable
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
 import pytest
 from alembic.config import Config
 from sqlalchemy import create_engine, text
+from sqlalchemy.orm import Session
 
 from alembic import command
+from app.core import security
+from app.models.user import User, UserRole
 
 # --- Point the app at the test database before any app module is imported. ---
 # Settings and the engine in app.db.session are built at import time, so the
@@ -42,7 +46,7 @@ from fastapi.testclient import TestClient
 
 import app.models
 from app.db.base import Base
-from app.db.session import engine
+from app.db.session import SessionLocal, engine
 from app.main import app
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -89,3 +93,54 @@ def _clean_database(_prepare_database: None) -> None:
 def client() -> TestClient:
     """TestClient wired to the test database via the app's real dependencies."""
     return TestClient(app)
+
+
+@pytest.fixture()
+def db() -> Session:
+    """A session bound to the test database."""
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+@pytest.fixture()
+def member_user(db: Session) -> User:
+    """A plain MEMBER account — can read items and request loans."""
+    user = User(
+        name="Member",
+        email="member@club.edu",
+        password_hash=security.hash_password("password123"),
+        role=UserRole.MEMBER,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@pytest.fixture()
+def admin_user(db: Session) -> User:
+    """An ADMIN account — can approve loans and manage items."""
+    user = User(
+        name="Admin",
+        email="admin@club.edu",
+        password_hash=security.hash_password("password123"),
+        role=UserRole.ADMIN,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@pytest.fixture()
+def auth_header() -> Callable[[User], dict[str, str]]:
+    """Return a factory that builds Authorization: Bearer <token> headers."""
+
+    def _make(user: User) -> dict[str, str]:
+        token = security.create_access_token(str(user.id))
+        return {"Authorization": f"Bearer {token}"}
+
+    return _make
