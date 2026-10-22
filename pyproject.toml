@@ -16,6 +16,7 @@ extend-exclude = "alembic"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+norecursedirs = [".venv", "venv", "dist", "build", ".git", "/opt/ros"]
 
 [tool.coverage.run]
 source = ["app"]
