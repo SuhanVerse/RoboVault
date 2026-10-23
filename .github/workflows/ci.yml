@@ -61,3 +61,9 @@ jobs:
         with:
           name: coverage-report
           path: htmlcov/
+
+      - name: Build runtime image
+        run: docker build --tag robovault-runtime-check .
+
+      - name: Check OCR executable in runtime image
+        run: docker run --rm --entrypoint tesseract robovault-runtime-check --version

@@ -19,6 +19,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH"
 
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends tesseract-ocr tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system app && useradd --system --gid app app \
     && mkdir -p /app/uploads && chown app:app /app/uploads
 

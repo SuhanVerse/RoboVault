@@ -5,7 +5,7 @@ Inventory & equipment lending API for the robotics club.
 ## Status
 
 Software Engineering academic project — FastAPI backend with PostgreSQL,
-Docker deployment, and CI/CD via GitHub Actions.
+Docker development setup, and CI via GitHub Actions.
 
 ## Architecture
 
@@ -52,10 +52,12 @@ app/
 | OCR | Tesseract + Pillow + OpenCV |
 | Testing | pytest + pytest-cov |
 | Linting | ruff + black |
-| CI/CD | GitHub Actions |
+| CI | GitHub Actions |
 | Containerization | Docker + Docker Compose |
 
 ## Quick Start
+
+Use Python 3.11+, Docker with Compose, and Tesseract for real OCR. On Ubuntu, install the OCR executable with `sudo apt-get install tesseract-ocr`; Python packages alone do not provide it. The Docker image includes Tesseract.
 
 ### 1. Clone and set up
 
@@ -64,8 +66,11 @@ git clone https://github.com/SuhanVerse/RoboVault.git
 cd RoboVault
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+[ -e .env ] || cp .env.example .env
 ```
+
+The example configuration uses a local database and a development signing key. Keep your own `.env` private and replace the signing key before exposing the service.
 
 ### 2. Start the database
 
@@ -92,6 +97,16 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 Open **http://localhost:8000/docs** for the interactive Swagger UI.
+
+To run the API in Docker instead of the local virtual environment, start the healthy database as above, then run:
+
+```bash
+docker compose build app
+docker compose run --rm app alembic upgrade head
+docker compose up -d app
+```
+
+Migrations are explicit; starting the container alone does not create the schema.
 
 ## API Reference
 
@@ -136,7 +151,7 @@ curl -X POST http://localhost:8000/api/v1/items \
 curl -X POST http://localhost:8000/api/v1/loans/request \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"item_id": 1, "quantity": 2, "due_days": 7}'
+  -d '{"item_id": 1, "quantity": 2, "due_date": "2027-01-31"}'
 
 # Approve a loan (ADMIN only)
 curl -X PUT http://localhost:8000/api/v1/loans/1/approve \
@@ -188,14 +203,27 @@ curl http://localhost:8000/health
 |------|--------|
 | **ADMIN** | Full access — create/edit/delete items, approve/reject/return loans, run OCR |
 | **MEMBER** | Read items, request loans |
-| **GUEST** | Read items only (default on registration) |
+| **GUEST** | Read items and request loans (default on registration) |
+
+Loan requests start as `REQUESTED`. Approval reduces available stock; rejection ends the request. An approved or overdue loan can be returned to restore stock.
+
+```mermaid
+flowchart LR
+    REQUESTED --> APPROVED
+    REQUESTED --> REJECTED
+    APPROVED --> OVERDUE
+    APPROVED --> RETURNED
+    OVERDUE --> RETURNED
+```
 
 ## Running Tests
 
 ```bash
-pytest --cov=app --cov-report=term
+pytest --cov=app --cov-report=term --cov-report=html
 # Open htmlcov/index.html for the HTML coverage report
 ```
+
+Tests use a separate PostgreSQL database with a `_test` suffix and clear its tables between tests; never point `TEST_DATABASE_URL` at data you need. OCR calls are mocked in the API suite, so coverage does not measure real image-reading accuracy. Actual OCR returns suggestions for review and does not create inventory automatically.
 
 ## Project Structure
 
@@ -204,8 +232,7 @@ RoboVault/
 ├── app/                 # Application source code
 ├── alembic/             # Database migrations
 ├── tests/               # Test suite
-├── .github/workflows/   # CI/CD pipeline
-├── docs/                # Guides and documentation
+├── .github/workflows/   # CI checks
 ├── docker-compose.yml   # Container orchestration
 ├── Dockerfile           # App container image
 ├── requirements.txt     # Python dependencies
@@ -215,12 +242,8 @@ RoboVault/
 
 ## Team
 
-| Member | Role | Contributions |
-|--------|------|---------------|
-| Member 1 (Engineer 1) | Infrastructure Lead | Project scaffold, Docker, CI/CD, Alembic, database setup |
-| Member 2 (Engineer 2) | Backend Developer | Authentication, JWT, RBAC, inventory CRUD, lending workflow |
-| Member 3 (Engineer 3) | Documentation & QA | API documentation, README, Swagger polish, test coverage |
+Developed as a Software Engineering team project. See the [contributor history](https://github.com/SuhanVerse/RoboVault/graphs/contributors) for recorded code contributions.
 
 ## License
 
-Academic project — not for production use.
+[GNU General Public License v3.0](LICENSE).
